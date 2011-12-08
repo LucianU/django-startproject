@@ -1,8 +1,9 @@
-from django_startproject import utils
-import optparse
 import os
 import sys
+import subprocess
+import optparse
 
+from django_startproject import utils
 
 TEMPLATE_DIR = os.path.join(os.path.dirname(os.path.realpath(utils.__file__)),
                             'project_template')
@@ -45,3 +46,4 @@ def start_project():
         replace[var] = value
 
     utils.copy_template(src, dest, replace)
+    subprocess.call(['python', os.path.join(dest, 'bin/bootstrap.py'), 'dev'])
