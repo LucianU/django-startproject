@@ -45,5 +45,13 @@ def start_project():
             value = raw_input(prompt) or default
         replace[var] = value
 
+    # Put in the rest of the replacement variables
+    REPO_PATH = os.path.dirname(os.path.abspath(__file__))
+    replace.update({
+        '$REPO_PATH': REPO_PATH,
+        '$PROJECT_NAME': replace['myproject'],
+        '$PROJECT_PATH': os.path.join(REPO_PATH, replace['myproject']),
+        '_gitignore': '.gitignore',
+    })
     utils.copy_template(src, dest, replace)
     subprocess.call(['python', os.path.join(dest, 'bin/bootstrap.py'), 'dev'])
