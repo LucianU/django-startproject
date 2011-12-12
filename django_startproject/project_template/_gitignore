@@ -3,3 +3,5 @@
 docs/_build/*
 uploads
 maint
+env
+$PROJECT_NAME/settings/local.py
