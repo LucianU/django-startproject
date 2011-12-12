@@ -26,6 +26,23 @@ REQ_FILES = {
     'prod': 'requirements/production.pip',
 }
 
+def create_env(path):
+    sys.stdout.write('Creating virtual env...\n')
+    subprocess.call([
+        'virtualenv',
+        '--no-site-packages',
+        path
+    ])
+
+def install_packages(platform):
+    sys.stdout.write('Installing packages in the %s requirements file...\n'
+                     % REQ_FILES[platform].split('/')[1])
+    subprocess.call([
+        os.path.join(REPO_ROOT, ENV_DIR, 'bin', 'pip'),
+        'install', '-r',
+        os.path.join(REPO_ROOT, REQ_FILES[platform])
+    ])
+
 def main():
     if (len(sys.argv) < 2 or (len(sys.argv) == 2
         and sys.argv[1] not in ['prod', 'dev', 'stag'])):
@@ -37,29 +54,11 @@ def main():
         sys.stdout.write('Virtual env named %s already exists\n' % ENV_DIR)
         return sys.exit(1)
 
-    sys.stdout.write('Creating virtual env...\n')
-    subprocess.call([
-        'virtualenv',
-        '--no-site-packages',
-        os.path.join(REPO_ROOT, ENV_DIR)
-    ])
+    create_env(os.path.join(REPO_ROOT, ENV_DIR))
 
-    sys.stdout.write('Installing packages in the %s requirements file...\n'
-                     % REQ_FILES['common'].split('/')[1])
-    subprocess.call([
-        os.path.join(REPO_ROOT, ENV_DIR, 'bin', 'pip'),
-        'install', '-r',
-        os.path.join(REPO_ROOT, REQ_FILES['common'])
-    ])
-
+    install_packages('common')
     platform = sys.argv[1]
-    sys.stdout.write('Installing packages in the %s requirements file...\n'
-                        % REQ_FILES[platform].split('/')[1])
-    subprocess.call([
-        os.path.join(REPO_ROOT, ENV_DIR, 'bin', 'pip'),
-        'install', '-r',
-        os.path.join(REPO_ROOT, REQ_FILES[platform])
-    ])
+    install_packages(platform)
 
 if __name__ == '__main__':
     main()
