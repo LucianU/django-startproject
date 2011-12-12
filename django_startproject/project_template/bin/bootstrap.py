@@ -26,7 +26,19 @@ REQ_FILES = {
     'prod': 'requirements/production.pip',
 }
 
+def get_project_dir():
+    """
+    Returns the name of the project dir; it's hackish, but I don't
+    see a better way to do this
+    """
+    for d in os.listdir(REPO_ROOT):
+        if os.path.isdir(d) and 'settings' in os.listdir(d):
+            return d
+
 def create_env(path):
+    """
+    Creates a virtual env at the specified path
+    """
     sys.stdout.write('Creating virtual env...\n')
     subprocess.call([
         'virtualenv',
@@ -35,6 +47,9 @@ def create_env(path):
     ])
 
 def install_packages(platform):
+    """
+    Uses pip to install packages for the specified platform
+    """
     sys.stdout.write('Installing packages in the %s requirements file...\n'
                      % REQ_FILES[platform].split('/')[1])
     subprocess.call([
@@ -42,6 +57,16 @@ def install_packages(platform):
         'install', '-r',
         os.path.join(REPO_ROOT, REQ_FILES[platform])
     ])
+
+def write_activate_file(platform):
+    """
+    Writes the DJANGO_SETTINGS_MODULE env var export declaration
+    to the 'activate' file of the virtual env
+    """
+    with open(os.path.join(REPO_ROOT, ENV_DIR, 'bin/activate'), 'a') as f:
+        f.write('export DJANGO_SETTINGS_MODULE=%s.settings.%s' %
+                (get_project_dir(), SETTINGS_MODULES[platform])
+        )
 
 def main():
     if (len(sys.argv) < 2 or (len(sys.argv) == 2
@@ -59,6 +84,7 @@ def main():
     install_packages('common')
     platform = sys.argv[1]
     install_packages(platform)
+    write_activate_file(platform)
 
 if __name__ == '__main__':
     main()
