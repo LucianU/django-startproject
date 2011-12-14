@@ -1,48 +1,92 @@
+Installation
 ============
-StartProject
-============
+Make sure you have **pip** installed and then run::
 
-StartProject installs a script which allows the easy creation of a standard
-Django project layout based on Lincoln Loop standards.
+    pip install -e git+https://github.com/LucianU/django-startproject#egg=django-startproject
 
+Quickstart
+==========
+Make sure you have installed **PostgreSQL** (including the **pg_config** binary), **nginx**
+and **virtualenv**.
 
-Script usage
-============
+#. Create your project (you will be prompted for some data)::
 
-After installing StartProject, simply run the following command (from within
-the directory in where the new project directory should be created)::
+        django-startproject.py project
 
-	django-startproject.py project_name
+#. Run git init in the project directory and make your first commit
+#. Create a database for the project::
+    
+        createdb project
 
-The script will prompt for values to replace boilerplate variables with. These
-variables allow for both the file contents and path names to be customized to
-this specific project.
+#. Put in your database credentials in settings/local.py
+#. Activate your environment and run ``django-admin.py syncdb`` 
+#. Symlink project/confs/development/nginx.conf into the 'sites-enabled' directory of your **nginx** installation and restart the server afterwards
+#. Go to your repo root and run ``supervisord``. Go to http://localhost:8000/ and you should be able to see the greeting from Django
 
+Overview
+========
 
-Using a custom project template
-===============================
+**django-startproject** does 3 things:
 
-If you would prefer to use a custom project template than the one included in
-this application, create your custom project template directory and call the
-command script like this::
+#. It creates a Django project that already has the appropriate structure
+   and the necessary files::
 
-    django-startproject.py --template-dir=/your/custom/template project_name
+    project/
+             setup.py
+	     fabfile.py
+             README.rst
+             requirements/
+                     common.pip
+                     development.pip
+                     production.pip
+	     bin/
+	             bootstrap.py
+             confs/
+                     development/
+		             nginx.conf
+			     supervisord.conf
+			     uwsgi.ini
+		     staging/
+			     same
+		     production/
+			     same
+     	     maint/
+	             lock/
+                     run/
+                             project.sock
+                             uwsgi.pid
+                     log/
+                             nginx/
+			             access.log
+				     error.log
+	     project/
+                     __init__.py
+		     urls.py
+		     wsgi.py
+		     settings/
+		             __init__.py
+			     local.py (not version tracked)
+			     common.py
+			     development.py
+			     staging.py
+			     production.py
+                     apps/
+                     static/
+		     templates/
 
+#. The created project provides a way to easily deploy the project in any kind of
+   environment (development, staging, production). The bootstrap.py script:
 
-Specifying boilerplate variables
---------------------------------
+   - creates a virtualenv called ``env`` and installs the packages specified in 
+     ``requirements/common.pip`` and those specific to the deployment environment.
+   - writes at the end of the bin/activate file the declaration 
+     ``export DJANGO_SETTINGS_MODULE=myproject.settings.deployment_env_settings``,
+     where ``myproject`` and ``deployment_env_settings`` are placeholders.
+   - it makes an ``etc`` directory in the virtual env, and symlinks to the supervisord.conf
+     file specific to the deployment environment
 
-Two optional files in the root of the project template directory are used to
-determine the boilerplate variables:
-
-``.startproject_boilerplate``
-	Each line should contain the boilerplate variable (and optionally, a
-	description of the variable, separated from the variable by white space).
-
-``.startproject_defaults``
-	Each line should contain a variable and the default value, separated by
-	whitespace. If the default value contains ``PROJECT``, it is replaced with
-	the project name.
-
-See the files included in the project_template directory of StartProject for
-an example.
+#. The created project uses the same stack (**nginx**, **uwsgi**, **supervisord**) for all environments,
+   including development, and doesn't even have a manage.py file. The reason for this is 
+   that it adheres to the principle that the  development and the production environments 
+   should be as similar as possible, to avoid issues when switching from one to the other. 
+   This is also why **PostgreSQL** is used in development, instead of **SQLite**. 
