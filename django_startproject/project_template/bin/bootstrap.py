@@ -76,7 +76,10 @@ def set_supervisor_conf(platform):
     corresponding to the deployment environment
     """
     etc_path = os.path.join(REPO_ROOT, ENV_DIR, 'etc')
-    supervisorconf_path = os.path.join(REPO_ROOT, 'confs', platform, 'supervisord.conf')
+    supervisorconf_path = os.path.join(
+                                REPO_ROOT, 'confs',
+                                platform, 'supervisord.conf'
+    )
 
     sys.stdout.write('Creating the etc directory in the virtual env...\n')
     os.mkdir(etc_path)
@@ -102,7 +105,6 @@ def main():
     create_env(os.path.join(REPO_ROOT, ENV_DIR))
     set_supervisor_conf(platform)
 
-    install_packages('common')
     install_packages(platform)
     write_activate_file(platform)
 
