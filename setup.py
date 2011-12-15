@@ -2,7 +2,7 @@ from setuptools import setup
 import os
 
 
-README_FILE = open('README')
+README_FILE = open('README.rst')
 try:
     LONG_DESCRIPTION = README_FILE.read()
 finally:
@@ -24,10 +24,10 @@ for path, dirs, filenames in os.walk(DATA_DIR):
 
 setup(name='django-startproject',
       version='1.0a',
-      author='Lincoln Loop',
-      author_email='info@lincolnloop.com',
-      description=('Create a Django project layout based on Lincoln Loop '
-                     'best practices.'),
+      author='Lucian Ursu',
+      author_email='lucian.ursu@gmail.com',
+      description=('Create a Django project layout that comes with a virtual env and '
+                     'server configuration files.'),
       long_description=LONG_DESCRIPTION,
       packages=['django_startproject'],
       package_data={'django_startproject': STARTPROJECT_DATA},
