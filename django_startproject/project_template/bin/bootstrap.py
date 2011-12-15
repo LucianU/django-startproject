@@ -8,8 +8,9 @@ to the platform (development or production).
 """
 
 import os
-import sys
+import shutil
 import subprocess
+import sys
 
 REPO_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 REPO_NAME = os.path.basename(REPO_ROOT)
@@ -68,6 +69,24 @@ def write_activate_file(platform):
                 (get_project_dir(), SETTINGS_MODULES[platform])
         )
 
+def set_supervisor_conf(platform):
+    """
+    Creates an 'etc' directory in the virtual env and symlinks or
+    copies (depending on the platform) the supervisord.conf file
+    corresponding to the deployment environment
+    """
+    etc_path = os.path.join(REPO_ROOT, ENV_DIR, 'etc')
+    supervisorconf_path = os.path.join(REPO_ROOT, 'confs', platform, 'supervisord.conf')
+
+    sys.stdout.write('Creating the etc directory in the virtual env...\n')
+    os.mkdir(etc_path)
+
+    sys.stdout.write('Putting supervisord.conf in %s/etc' % (ENV_DIR,))
+    try:
+        os.symlink(supervisorconf_path, etc_path)
+    except NotImplementedError:
+        shutil.copyfile(supervisorconf_path, etc_path)
+
 def main():
     if (len(sys.argv) < 2 or (len(sys.argv) == 2
         and sys.argv[1] not in ['prod', 'dev', 'stag'])):
@@ -79,10 +98,11 @@ def main():
         sys.stdout.write('Virtual env named %s already exists\n' % ENV_DIR)
         return sys.exit(1)
 
+    platform = sys.argv[1]
     create_env(os.path.join(REPO_ROOT, ENV_DIR))
+    set_supervisor_conf(platform)
 
     install_packages('common')
-    platform = sys.argv[1]
     install_packages(platform)
     write_activate_file(platform)
 
