@@ -75,8 +75,8 @@ def set_supervisor_conf(platform):
     copies (depending on the platform) the supervisord.conf file
     corresponding to the deployment environment
     """
-    etc_path = os.path.join(REPO_ROOT, ENV_DIR, 'etc', 'supervisord.conf')
-    supervisorconf_path = os.path.join(
+    etc_path = os.path.join(REPO_ROOT, ENV_DIR, 'etc')
+    spvconf_path = os.path.join(
                                 REPO_ROOT, 'confs',
                                 platform, 'supervisord.conf'
     )
@@ -84,11 +84,12 @@ def set_supervisor_conf(platform):
     sys.stdout.write('Creating the etc directory in the virtual env...\n')
     os.mkdir(etc_path)
 
-    sys.stdout.write('Putting supervisord.conf in %s/etc' % (ENV_DIR,))
+    sys.stdout.write('Putting supervisord.conf in %s/etc...\n'% (ENV_DIR,))
+    spvconf_targetpath = os.path.join(etc_path, 'supervisord.conf')
     try:
-        os.symlink(supervisorconf_path, etc_path)
+        os.symlink(spvconf_path, spvconf_targetpath)
     except NotImplementedError:
-        shutil.copyfile(supervisorconf_path, etc_path)
+        shutil.copyfile(spvconf_path, spvconf_targetpath)
 
 def main():
     if (len(sys.argv) < 2 or (len(sys.argv) == 2
