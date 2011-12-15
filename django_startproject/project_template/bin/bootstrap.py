@@ -75,7 +75,7 @@ def set_supervisor_conf(platform):
     copies (depending on the platform) the supervisord.conf file
     corresponding to the deployment environment
     """
-    etc_path = os.path.join(REPO_ROOT, ENV_DIR, 'etc')
+    etc_path = os.path.join(REPO_ROOT, ENV_DIR, 'etc', 'supervisord.conf')
     supervisorconf_path = os.path.join(
                                 REPO_ROOT, 'confs',
                                 platform, 'supervisord.conf'
