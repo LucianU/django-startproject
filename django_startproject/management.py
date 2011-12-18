@@ -46,7 +46,7 @@ def start_project():
         replace[var] = value
 
     # Put in the rest of the replacement variables
-    REPO_PATH = os.path.dirname(os.path.abspath(__file__))
+    REPO_PATH = os.path.join(os.getcwd(), replace['myproject'])
     replace.update({
         '$REPO_PATH': REPO_PATH,
         '$PROJECT_NAME': replace['myproject'],
