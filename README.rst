@@ -20,8 +20,8 @@ and **virtualenv**.
 
 #. Put in your database credentials in settings/local.py
 #. Activate your environment and run ``django-admin.py syncdb`` 
-#. Symlink project/confs/development/nginx.conf into the 'sites-enabled' directory of your **nginx** installation and restart the server afterwards
-#. Go to your repo root and run ``supervisord``. Go to http://localhost:8000/ and you should be able to see the greeting from Django
+#. Symlink project/confs/development/nginx.conf into the 'sites-enabled' directory of your **nginx** installation and restart the server
+#. Go to your repo root and run ``supervisord``. Go to http://localhost:8000/ and you should see the greeting from Django
 
 Overview
 ========
@@ -75,13 +75,15 @@ Overview
 		     templates/
 
 #. The created project provides a way to easily deploy the project in any kind of
-   environment (development, staging, production). The bootstrap.py script:
+   environment (development, staging, production): the ``bin/bootstrap.py`` script. This
+   script:
 
    - creates a virtualenv called ``env`` and installs the packages specified in 
      ``requirements/common.pip`` and those specific to the deployment environment.
    - writes at the end of the bin/activate file the declaration 
      ``export DJANGO_SETTINGS_MODULE=myproject.settings.deployment_env_settings``,
-     where ``myproject`` and ``deployment_env_settings`` are placeholders.
+     where ``deployment_env_settings`` can be one of ``development``, ``staging``, 
+     ``production``.
    - it makes an ``etc`` directory in the virtual env, and symlinks to the supervisord.conf
      file specific to the deployment environment
 
