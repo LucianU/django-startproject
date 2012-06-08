@@ -1,4 +1,4 @@
-from tasker.settings.common import *
+from myproject.settings.common import *
 
 DATABASES['default'].update({
     'ENGINE': 'django.db.backends.postgresql_psycopg2',
