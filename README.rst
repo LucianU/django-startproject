@@ -1,21 +1,19 @@
-Developer documentation is available in Sphinx format in the docs directory.
+Usage
+#####
+First create your virtualenv, activate it and install Django and then you can
+run::
 
-Initial installation instructions (including how to build the documentation as
-HTML) can be found in docs/install.rst.
+    django-admin.py startproject --template=https://github.com/LucianU/django-startproject/zipball/master <project>
 
-Deployment
-==============================================================================
+replacing `<project>` with the name of your project.
 
-To deploy this application, you need to follow these steps:
+Next, symlink all the configuration files that you use in their required locations.
 
-#. Clone the repository with git.
-#. Run the bootstrap.py script located in PROJECT_DIR/bin passing it 'dev',
-   'prod' or 'stag'.
+Overview
+########
+This project template is based on a certain stack of applications. These are::
 
-   This will create a virtual environment called 'env', in which it will
-   install the packages listed in requirements/common.pip and in the file
-   corresponding to the platform.
-
-   Finally, it will append to the bin/activate file a declaration that will
-   set DJANGO_SETTINGS_MODULE to the settings module corresponding to the
-   platform when the virtual env is activated.
+    - postgresql as a database
+    - nginx and uwsgi as a proxy and application server respectively
+    - supervisor for process management
+    - memcached for caching
