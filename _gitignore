@@ -1,7 +1,0 @@
-*~
-*.pyc
-docs/_build/*
-uploads
-maint
-env
-{{ project_name }}/settings/local.py

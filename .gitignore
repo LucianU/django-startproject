@@ -1,3 +1,21 @@
-*.pyc
-django_startproject.egg-info
+# Python bytecode:
+*.py[co]
+
+# Packaging files:
+*.egg*
+
+# Editor temp files:
+*.swp
+*~
+
+# Local settings file:
+settings/local.py
+
+# Sphinx docs:
 build
+
+# SQLite3 database files:
+*.db
+
+# Celerybeat scheduler file:
+celerybeat-schedule
