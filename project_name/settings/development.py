@@ -1,5 +1,5 @@
-from myproject.settings.common import *
+from {{ project_name }}.settings.common import *
 try:
-    from myproject.settings.local import *
+    from {{ project_name }}.settings.local import *
 except ImportError:
     pass

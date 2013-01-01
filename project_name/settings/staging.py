@@ -1,1 +1,1 @@
-from myproject.settings.common import *
+from {{ project_name }}.settings.common import *

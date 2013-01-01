@@ -2,9 +2,9 @@ from fabric.api import env, local, run, require, cd
 from fabric.operations import _prefix_commands, _prefix_env_vars
 
 env.disable_known_hosts = True # always fails for me without this
-env.hosts = ['myproject.mydevhost']
-env.root = '/opt/webapps/myproject'
-env.proj_root = env.root + '/src/myproject'
+env.hosts = ['{{ project_name }}.mydevhost']
+env.root = '/opt/webapps/{{ project_name }}'
+env.proj_root = env.root + '/src/{{ project_name }}'
 env.proj_repo = 'git@github.com:myuser/myrepo.git'
 env.pip_file = env.proj_root + '/requirements.pip'
 
@@ -57,7 +57,7 @@ def clone():
         sshagent_run('git clone %s' % env.proj_repo)
     ve_run('pip install -e %s' % env.proj_root)
     
-    with cd('%s/myproject/conf/local' % env.proj_root):
+    with cd('%s/{{ project_name }}/conf/local' % env.proj_root):
         run('ln -s ../dev/__init__.py')
         run('ln -s ../dev/settings.py')
 
