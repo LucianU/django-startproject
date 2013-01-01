@@ -1,0 +1,4 @@
+[pep8]
+ignore = E128
+exclude = migrations
+max-line-length = 80
