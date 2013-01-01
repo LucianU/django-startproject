@@ -20,7 +20,6 @@ profile=no
 
 # Add <file or directory> to the black list. It should be a base name, not a
 # path. You may set this option multiple times.
-ignore=conf
 ignore=migrations
 
 # Pickle collected data for later comparisons.
@@ -72,7 +71,7 @@ include-ids=yes
 files-output=no
 
 # Tells wether to display a full report or only the messages
-reports=yes
+reports=no
 
 # Python expression which should return a note less than 10 (10 is the highest
 # note). You have access to the variables errors warning, statement which
