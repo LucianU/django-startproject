@@ -14,10 +14,10 @@ prev_sys_path = list(sys.path)
 
 # Get the path to the env's site-packages directory
 site_packages = subprocess.check_output([
-                    os.path.join(REPO_PATH, 'env/bin/python'),
-                    '-c',
-                    'from distutils.sysconfig import get_python_lib;'
-                    'print get_python_lib(),'
+    os.path.join(REPO_PATH, 'env/bin/python'),
+    '-c',
+    'from distutils.sysconfig import get_python_lib;'
+    'print get_python_lib(),'
 ]).strip()
 
 # Add the virtualenv site-packages to the site packages
@@ -39,6 +39,3 @@ sys.path.append(os.path.join(PROJECT_PATH, 'apps'))
 os.environ['DJANGO_SETTINGS_MODULE'] = '{{ project_name }}.settings.development'
 import django.core.handlers.wsgi
 application = django.core.handlers.wsgi.WSGIHandler()
-
-
-
