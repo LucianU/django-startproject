@@ -1,13 +1,13 @@
 Usage
 #####
-First create your virtualenv, activate it and install Django and then you can
+Create your virtualenv, activate it and install Django and then you can
 run::
 
     django-admin.py startproject --template=https://github.com/LucianU/django-startproject/zipball/master <project>
 
 replacing `<project>` with the name of your project.
 
-Next, symlink all the configuration files that you use in their required locations.
+Symlink all the configuration files that you use in their required locations.
 
 Overview
 ########
