@@ -1,4 +1,5 @@
 django>=1.4.0,<=1.4.9
+fabric==1.5.1
 psycopg2==2.4.1
 pillow==1.7.7
 
