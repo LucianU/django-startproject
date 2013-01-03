@@ -1,92 +1,115 @@
-from fabric.api import env, local, run, require, cd
-from fabric.operations import _prefix_commands, _prefix_env_vars
+import os
+from contextlib import contextmanager as _contextmanager
 
-env.disable_known_hosts = True # always fails for me without this
-env.hosts = ['{{ project_name }}.mydevhost']
-env.root = '/opt/webapps/{{ project_name }}'
-env.proj_root = env.root + '/src/{{ project_name }}'
-env.proj_repo = 'git@github.com:myuser/myrepo.git'
-env.pip_file = env.proj_root + '/requirements.pip'
+from fabric.api import env, run, cd, prefix, settings
 
-
-def deploy():
-    """Update source, update pip requirements, syncdb, restart server"""
-    update()
-    update_reqs()
-    syncdb()
-    restart()
+env.proj_root = '<Path to project location>'
+env.proj_dir = os.path.join(env.proj_root, '{{ project_name }}')
+env.proj_repo = '<URL to central repo>'
+env.virtualenv = '{{ project_name }}'
+env.activate = 'workon %s' % env.virtualenv
 
 
-def switch(branch):
-    """Switch the repo branch which the server is using"""
-    with cd(env.proj_root):
-        ve_run('git checkout %s' % branch)
-    restart()
+def stag():
+    """
+    Staging connection information
+    """
+    env.user = ''
+    env.hosts = []
 
 
-def version():
-    """Show last commit to repo on server"""
-    with cd(env.proj_root):
-        sshagent_run('git log -1')
+def prod():
+    """
+    Production connection information
+    """
+    env.user = ''
+    env.hosts = []
 
 
-def restart():
-    """Restart Apache process"""
-    run('touch %s/etc/apache/django.wsgi' % env.root)
-
-
-def update_reqs():
-    """Update pip requirements"""
-    ve_run('yes w | pip install -r %s' % env.pip_file)
-
-
-def update():
-    """Updates project source"""
-    with cd(env.proj_root):
-        sshagent_run('git pull')
-
-
-def syncdb():
-    """Run syncdb (along with any pending south migrations)"""
-    ve_run('manage.py syncdb --migrate')
+@_contextmanager
+def _virtualenv():
+    """
+    Changes to the proj_dir and activates the virtualenv
+    """
+    with cd(env.proj_dir):
+        with prefix(env.activate):
+            yield
 
 
 def clone():
-    """Clone the repository for the first time"""
-    with cd('%s/src' % env.root):
-        sshagent_run('git clone %s' % env.proj_repo)
-    ve_run('pip install -e %s' % env.proj_root)
-    
-    with cd('%s/{{ project_name }}/conf/local' % env.proj_root):
-        run('ln -s ../dev/__init__.py')
-        run('ln -s ../dev/settings.py')
-
-
-def ve_run(cmd):
     """
-    Helper function.
-    Runs a command using the virtualenv environment
+    Clones the project from the central repository
     """
-    require('root')
-    return sshagent_run('source %s/bin/activate; %s' % (env.root, cmd))
+    run('git clone %s %s' % (env.proj_repo, env.proj_dir))
 
 
-def sshagent_run(cmd):
+def make_virtualenv():
     """
-    Helper function.
-    Runs a command with SSH agent forwarding enabled.
+    Creates a virtualenv on the remote host
+    """
+    run('mkvirtualenv %s' % env.virtualenv)
 
-    Note:: Fabric (and paramiko) can't forward your SSH agent.
-    This helper uses your system's ssh to do so.
+
+def update_reqs():
     """
-    # Handle context manager modifications
-    wrapped_cmd = _prefix_commands(_prefix_env_vars(cmd), 'remote')
-    try:
-        host, port = env.host_string.split(':')
-        return local(
-            "ssh -p %s -A %s@%s '%s'" % (port, env.user, host, wrapped_cmd)
-        )
-    except ValueError:
-        return local(
-            "ssh -A %s@%s '%s'" % (env.user, env.host_string, wrapped_cmd)
-        )
+    Makes sure all packages listed in requirements are installed
+    """
+    with _virtualenv():
+        run('pip install -r requirements.txt')
+
+
+def update_code():
+    """
+    Pulls the latest changes from the central repository
+    """
+    with cd(env.proj_dir):
+        run('git pull')
+
+
+def restart_uwsgi():
+    """
+    Restarts uwsgi process
+    """
+    with _virtualenv():
+        with cd(env.proj_dir):
+            run('supervisorctl -c confs/production/supervisord.conf'
+                ' restart uwsgi')
+
+
+def start_supervisord():
+    """
+    Starts supervisord on the remote host
+    """
+    with _virtualenv():
+        with cd(env.proj_dir):
+            run('supervisord -c confs/production/supervisord.conf')
+
+
+def syncdb():
+    """
+    Runs syncdb (along with any pending south migrations)
+    """
+    with _virtualenv():
+        with cd(env.proj_dir):
+            run('manage.py syncdb --migrate')
+
+
+def deploy():
+    """
+    Creates or updates the project, runs migrations, installs dependencies.
+    """
+    first_deploy = False
+    with settings(warn_only=True):
+        if run('test -d %s' % env.proj_dir).failed:
+            first_deploy = True
+            clone()
+        if run('test -d $WORKON_HOME/%s' % env.virtualenv).failed:
+            make_virtualenv()
+
+    update_code()
+    update_reqs()
+    syncdb()
+    if first_deploy:
+        start_supervisord()
+    else:
+        restart_uwsgi()
