@@ -55,7 +55,8 @@ def update_reqs():
     Makes sure all packages listed in requirements are installed
     """
     with _virtualenv():
-        run('pip install -r requirements.txt')
+        with cd(env.proj_dir):
+            run('pip install -r requirements/production.pip')
 
 
 def update_code():
