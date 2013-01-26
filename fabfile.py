@@ -3,7 +3,10 @@ from contextlib import contextmanager as _contextmanager
 
 from fabric.api import env, run, cd, prefix, settings
 
+# The directory where you will deploy your project,
+# for example /home/user/
 env.proj_root = '<Path to project location>'
+
 env.proj_dir = os.path.join(env.proj_root, '{{ project_name }}')
 env.proj_repo = '<URL to central repo>'
 env.virtualenv = '{{ project_name }}'
@@ -16,6 +19,7 @@ def stag():
     """
     env.user = ''
     env.hosts = []
+    env.branch = ''
 
 
 def prod():
@@ -24,6 +28,7 @@ def prod():
     """
     env.user = ''
     env.hosts = []
+    env.branch = ''
 
 
 @_contextmanager
@@ -60,10 +65,10 @@ def update_reqs():
 
 def update_code():
     """
-    Pulls the latest changes from the central repository
+    Pulls changes from the central repo and checks out the right branch
     """
     with cd(env.proj_dir):
-        run('git pull')
+        run('git pull && git checkout %s' % env.branch)
 
 
 def restart_uwsgi():
