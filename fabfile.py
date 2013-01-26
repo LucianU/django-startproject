@@ -55,8 +55,7 @@ def update_reqs():
     Makes sure all packages listed in requirements are installed
     """
     with _virtualenv():
-        with cd(env.proj_dir):
-            run('pip install -r requirements/production.pip')
+        run('pip install -r requirements/production.pip')
 
 
 def update_code():
@@ -72,9 +71,8 @@ def restart_uwsgi():
     Restarts uwsgi process
     """
     with _virtualenv():
-        with cd(env.proj_dir):
-            run('supervisorctl -c confs/production/supervisord.conf'
-                ' restart uwsgi')
+        run('supervisorctl -c confs/production/supervisord.conf'
+            ' restart uwsgi')
 
 
 def start_supervisord():
@@ -82,8 +80,7 @@ def start_supervisord():
     Starts supervisord on the remote host
     """
     with _virtualenv():
-        with cd(env.proj_dir):
-            run('supervisord -c confs/production/supervisord.conf')
+        run('supervisord -c confs/production/supervisord.conf')
 
 
 def syncdb():
@@ -91,8 +88,7 @@ def syncdb():
     Runs syncdb (along with any pending south migrations)
     """
     with _virtualenv():
-        with cd(env.proj_dir):
-            run('manage.py syncdb --migrate')
+        run('python manage.py syncdb --migrate')
 
 
 def deploy():
