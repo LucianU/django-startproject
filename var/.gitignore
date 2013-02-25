@@ -1,0 +1,6 @@
+# Ignore everything
+*
+# except this file and existing dirs
+!.gitignore
+!log
+!run
