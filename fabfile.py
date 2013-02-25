@@ -20,6 +20,7 @@ def stag():
     env.user = ''
     env.hosts = []
     env.branch = ''
+    env.requirements = 'requirements/staging.pip'
 
 
 def prod():
@@ -29,6 +30,7 @@ def prod():
     env.user = ''
     env.hosts = []
     env.branch = ''
+    env.requirements = 'requirements/production.pip'
 
 
 @_contextmanager
@@ -60,7 +62,7 @@ def update_reqs():
     Makes sure all packages listed in requirements are installed
     """
     with _virtualenv():
-        run('pip install -r requirements/production.pip')
+        run('pip install -r %s' % env.requirements)
 
 
 def update_code():
