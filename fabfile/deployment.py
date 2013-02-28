@@ -75,12 +75,16 @@ def first_deploy():
     """
     Sets up and deploys the project for the first time.
     """
-    # We're doing this to filter out the hosts that have
-    # already been setup and deployed to
-    with settings(warn_only=True):
-        if env.run('test -d %s' % env.project).failed:
-            return
-    clone()
+    # If we're on the local machine, there's no point in cloning
+    # the project, because it's already been cloned. Otherwise
+    # the user couldn't run this file
+    if env.run == run:
+        # We're doing this to filter out the hosts that have
+        # already been setup and deployed to
+        with settings(warn_only=True):
+            if env.run('test -d %s' % env.project).failed:
+                return
+        clone()
 
     # We don't setup nginx on development machines
     if env.run == run:
