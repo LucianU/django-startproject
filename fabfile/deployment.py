@@ -89,7 +89,10 @@ def first_deploy():
     update_reqs()
     syncdb()
     collectstatic()
-    start_supervisord()
+
+    # We don't start supervisor on development machines
+    if env.run == run:
+        start_supervisord()
 
 
 @task
