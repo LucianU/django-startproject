@@ -2,5 +2,3 @@
 *
 # except this file
 !.gitignore
-!nginx
-!uwsgi
