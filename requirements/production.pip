@@ -1,5 +1,5 @@
 -r common.pip
 
-sentry==5.1.0
 supervisor==3.0a12
 uwsgi==1.2.4
+raven==3.5.0
