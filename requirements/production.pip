@@ -1,5 +1,5 @@
 -r common.pip
 
-supervisor==3.0a12
-uwsgi==1.2.4
 raven==3.5.0
+supervisor==3.0
+uwsgi==1.9.17.1
