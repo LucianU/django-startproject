@@ -4,7 +4,7 @@ Quickstart
    install Django.
 2. Create your project by running::
 
-    django-admin.py startproject --template=https://github.com/LucianU/django-startproject/zipball/master <project>
+    django-admin.py startproject -e py -e conf -e ini -e nginx --template=https://github.com/LucianU/django-startproject/zipball/master <project>
 
 
 replacing ``<project>`` with the name of your project.
