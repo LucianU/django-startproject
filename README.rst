@@ -9,11 +9,26 @@ Quickstart
 
 replacing ``<project>`` with the name of your project.
 
-3. Look at the different files in the ``confs`` directory and its subdirectories
-   and adjust the values as you wish. Replace the placeholders with your wanted
-   values.
+3. Install the requirements in the virtualenv::
 
-4. Go into the ``fabfile/targets.py`` file and adjust the env vars as you see fit.
+    cd /path/to/project
+    pip install -r requirements/common.pip
+
+4. Create a database and put the credentials in your ``settings/local.py`` file.
+
+5. Sync the database::
+
+    python manage.py syncdb
+
+6. Run the server and visit the site in the browser. You should see the welcome
+   message from Django::
+
+    python manage.py runserver 127.0.0.1:8000
+
+Finally, you can look at the different files in the ``confs`` directory and its
+subdirectories and adjust the values as you wish. Replace the placeholders with
+your wanted values. Also, go into the ``fabfile/targets.py`` file and adjust the
+env vars as you see fit.
 
 
 Overview
