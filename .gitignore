@@ -9,7 +9,7 @@
 *~
 
 # Local settings file:
-settings/local.py
+{{ project_name }}/settings/local.py
 
 # Sphinx docs:
 build
