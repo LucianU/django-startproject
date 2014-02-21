@@ -65,7 +65,7 @@ def update_reqs():
     Makes sure all packages listed in requirements are installed
     """
     with virtualenv():
-        env.run('pip install -r %s' % env.reqs)
+        env.run('pip install -r %s' % env.requirements)
 #################################################################
 
 
