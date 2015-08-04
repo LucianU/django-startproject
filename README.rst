@@ -1,3 +1,5 @@
+DEPRECATED in favor of https://github.com/LucianU/bud.
+
 Quickstart
 ##########
 1. Create your virtualenv with the same name as the project, activate it and
